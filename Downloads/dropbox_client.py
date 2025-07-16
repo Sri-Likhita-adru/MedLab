@@ -70,3 +70,14 @@ class DropboxClient:
         Alias for upload(), for backwards compatibility.
         """
         return self.upload(local_path, dropbox_path, overwrite)
+
+    def upload_folder(self, local_folder: str, dropbox_folder: str):
+        """
+        Recursively upload a local folder to Dropbox.
+        """
+        for root, dirs, files in os.walk(local_folder):
+            for file in files:
+                local_path = os.path.join(root, file)
+                relative_path = os.path.relpath(local_path, local_folder)
+                dropbox_path_full = os.path.join(dropbox_folder, relative_path).replace("\\", "/")
+                self.upload(local_path, dropbox_path_full)
